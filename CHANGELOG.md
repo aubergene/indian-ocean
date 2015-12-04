@@ -1,6 +1,13 @@
 Changelog
 =========
 
+# 1.0.3
+
+> 2015-12-04
+
+* When attempting to read an empty file as json, set it to `'[]'` so it will be parsed as an empty list.
+  * [c2d11999a1bf60c07707b7b9cc09a68151cfc63c](https://github.com/mhkeller/indian-ocean/commit/c2d11999a1bf60c07707b7b9cc09a68151cfc63c)
+
 # 1.0.2
 
 * Use `===` instead of `==` for code style
