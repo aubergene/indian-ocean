@@ -6,7 +6,7 @@ var so = require('../');
 
 describe('sandy-ocean', function () {
     beforeEach(function () {
-        return fs.emptyDir('output');
+        return fs.emptyDir('test/output');
     });
 
     describe('readData', function () {
@@ -32,6 +32,8 @@ describe('sandy-ocean', function () {
         });
         
         it('reads CSV as plain text without a parser', function () {
+            so.setParser('.csv', null)
+
             return so.readData('test/input/foo.csv')
                 .then(function (data) {
                     assert.equal(data, fs.readFileSync('test/input/foo.csv', 'utf-8'));
@@ -45,6 +47,14 @@ describe('sandy-ocean', function () {
             return so.readData('test/input/foo.csv')
                 .then(function (data) {
                     assert.deepEqual(data, csvParse(fs.readFileSync('test/input/foo.csv', 'utf-8')));
+                });
+        });
+
+        it('reads TSV', function () {
+            return so.readData('test/input/foo.tsv')
+                .then(function (data) {
+                    // TODO make TSV sensible
+                    assert.deepEqual(data, [['name','price'],['apple','1'],['grape','2']]);
                 });
         });
 
