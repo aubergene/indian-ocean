@@ -2,39 +2,47 @@ var fs = require('fs');
 var path = require('path');
 var assert = require('assert');
 var fs = require('fs-extra');
-var so = require('../');
+var io = require('../');
 
-describe('sandy-ocean', function () {
+describe('indian-ocean', function () {
     beforeEach(function () {
         return fs.emptyDir('test/output');
     });
 
+    describe('extname', function () {
+        it('return the file extension', function () {
+            assert.equal('.txt', io.extname('test/input/foo.txt'));
+            assert.equal('.html', io.extname('test/input/foo.ejs.html'));
+            assert.equal('', io.extname('test/input/foo'));
+        });
+    })
+
     describe('readData', function () {
         it('reads plain text', function () {
-            return so.readData('test/input/foo.txt')
+            return io.readData('test/input/foo.txt')
             .then(function (data) {
                 assert.equal(data, fs.readFileSync('test/input/foo.txt', 'utf-8'));
             });
         });
-        
+
         it('reads with options', function () {
-            return so.readData('test/input/foo.txt', { encoding: null })
+            return io.readData('test/input/foo.txt', { encoding: null })
             .then(function (data) {
                 assert.deepEqual(data, fs.readFileSync('test/input/foo.txt'));
             });
         });
-        
+
         it('reads JSON', function () {
-            return so.readData('test/input/foo.json')
+            return io.readData('test/input/foo.json')
             .then(function (data) {
                 assert.deepEqual(data, JSON.parse(fs.readFileSync('test/input/foo.json', 'utf-8')));
             });
         });
-        
-        it('reads CSV as plain text without a parser', function () {
-            so.setParser('.csv', null)
 
-            return so.readData('test/input/foo.csv')
+        it('reads CSV as plain text without a parser', function () {
+            io.setParser('.csv', null)
+
+            return io.readData('test/input/foo.csv')
                 .then(function (data) {
                     assert.equal(data, fs.readFileSync('test/input/foo.csv', 'utf-8'));
                 });
@@ -42,29 +50,38 @@ describe('sandy-ocean', function () {
 
         it('reads CSV as data when d3.csvParse is set as .csv parser', function () {
             var csvParse = require('d3-dsv').csvParse
-            so.setParser('.csv', csvParse)
+            io.setParser('.csv', csvParse)
 
-            return so.readData('test/input/foo.csv')
+            return io.readData('test/input/foo.csv')
                 .then(function (data) {
                     assert.deepEqual(data, csvParse(fs.readFileSync('test/input/foo.csv', 'utf-8')));
                 });
         });
 
         it('reads TSV', function () {
-            return so.readData('test/input/foo.tsv')
+            return io.readData('test/input/foo.tsv')
                 .then(function (data) {
                     // TODO make TSV sensible
-                    assert.deepEqual(data, [['name','price'],['apple','1'],['grape','2']]);
+                    assert.deepEqual(JSON.stringify(data), JSON.stringify([{name:'apple', price:'1'},{name:'grape',price:'2'}]));
                 });
         });
 
+        // it('reads PNG', function () {
+        //     return io.readData('test/input/foo.png', "binary")
+        //         .then(function (data) {
+        //             // TODO make TSV sensible
+        //             console.log(JSON.stringify(data, null, 2))
+        //             assert.deepEqual(data, "wooo");
+        //         });
+        // });
+
         it('reads plain text synchronously', function () {
-            var data = so.readDataSync('test/input/foo.txt')
+            var data = io.readDataSync('test/input/foo.txt')
             assert.equal(data, fs.readFileSync('test/input/foo.txt', 'utf-8'));
         });
-        
+
         it('reads JSON synchronously', function () {
-            var data = so.readDataSync('test/input/foo.json')
+            var data = io.readDataSync('test/input/foo.json')
             assert.deepEqual(data, JSON.parse(fs.readFileSync('test/input/foo.json', 'utf-8')));
         });
     });
