@@ -35,7 +35,7 @@ export default [{
   ],
   external: ['fs-extra', 'path'],
   output: [
-        { name: 'indian-ocean', file: 'dist/indian-ocean.umd.js', format: 'umd' }
+        { name: 'indianOcean', file: 'dist/indian-ocean.umd.js', format: 'umd' }
   ],
   sourcemap: true
 }]
